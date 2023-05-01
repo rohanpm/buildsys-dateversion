@@ -1,0 +1,11 @@
+[project]
+name = "buildsys-dateversion"
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "buildsys_dateversion.__version__"}
+
+[build-system]
+requires = ["setuptools>=40.8.0", "wheel"]
+backend-path = ["src"]
+build-backend = "buildsys_dateversion"
