@@ -9,10 +9,9 @@ import importlib
 
 LOG = logging.getLogger("buildsys-dateversion")
 
-LOG.setLevel(logging.DEBUG)
-
-# FIXME: make configurable
-LOG.addHandler(logging.FileHandler("/tmp/buildsys-dateversion.log"))
+if os.getenv("BUILDSYS_DATEVERSION_DEBUG"):
+    LOG.setLevel(logging.DEBUG)
+    LOG.addHandler(logging.FileHandler(os.getenv("BUILDSYS_DATEVERSION_DEBUG")))
 
 VERSION_PATTERN = re.compile(r"^__version__ *=.*$", flags=re.MULTILINE)
 
