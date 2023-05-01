@@ -17,6 +17,14 @@ LOG.addHandler(logging.FileHandler("/tmp/buildsys-dateversion.log"))
 VERSION_PATTERN = re.compile(r"^__version__ *=.*$", flags=re.MULTILINE)
 
 
+def normalized(version: str):
+    # PEP 440 version string normalization.
+    #
+    # (Not a generic function, just 'good enough' to work on our
+    # known strftime templates)
+    return '.'.join([str(int(x)) for x in version.split('.')])
+
+
 class DateVersion:
     def __init__(self, config_settings=None):
         self.config_settings: dict = (config_settings or {}).copy()
@@ -115,7 +123,7 @@ class DateVersion:
         ]
 
         for format in formats:
-            candidate = self.datetime.strftime(format)
+            candidate = normalized(self.datetime.strftime(format))
             if not self.version_in_repository(candidate):
                 return candidate
             LOG.info(
@@ -125,7 +133,7 @@ class DateVersion:
             )
 
         # Final fallback
-        return datetime.strftime("%Y.%m.%d.%H.%M.%S")
+        return normalized(datetime.strftime("%Y.%m.%d.%H.%M.%S"))
 
     def version_in_repository(self, candidate_version: str) -> bool:
         repo_url = os.path.join(self.index_url, self.distribution_name)
