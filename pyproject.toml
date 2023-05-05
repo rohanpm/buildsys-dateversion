@@ -6,6 +6,6 @@ dynamic = ["version"]
 version = {attr = "buildsys_dateversion.__version__"}
 
 [build-system]
-requires = ["setuptools>=40.8.0", "wheel"]
+requires = []
 backend-path = ["src"]
 build-backend = "buildsys_dateversion"

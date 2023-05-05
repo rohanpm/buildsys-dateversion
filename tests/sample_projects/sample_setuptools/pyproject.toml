@@ -1,0 +1,10 @@
+[project]
+name = "sample_setuptools"
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "sample_setuptools.__version__"}
+
+[build-system]
+requires = ["../../.."]
+build-backend = "buildsys_dateversion"

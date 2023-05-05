@@ -6,6 +6,7 @@ import urllib.error
 from datetime import datetime
 from contextlib import contextmanager
 import importlib
+import sys
 
 LOG = logging.getLogger("buildsys-dateversion")
 
@@ -61,12 +62,16 @@ class DateVersion:
         return self.config_settings["dateversion-version-path"]
 
     @property
+    def build_backend_name(self) -> str:
+        return (
+            self.config_settings.get("dateversion-build-backend")
+            or "setuptools.build_meta:__legacy__"
+        )
+
+    @property
     def build_backend(self):
         if "dateversion-build-backend-object" not in self.config_settings:
-            backend_name = (
-                self.config_settings.get("dateversion-build-backend")
-                or "setuptools.build_meta:__legacy__"
-            )
+            backend_name = self.build_backend_name
 
             components = backend_name.split(":")
             module = importlib.import_module(components[0])
@@ -215,8 +220,32 @@ class DateVersion:
             metadata_directory=metadata_directory,
         )
 
+    def get_requires_for_build_editable(self) -> list[str]:
+        return self.get_requires_for_build_wheel()
+
+    def get_requires_for_build_sdist(self) -> list[str]:
+        out = []
+
+        if self.build_backend_name.startswith("setuptools."):
+            # apply the same default behavior as pip
+            out.append("setuptools>=40.8.0")
+
+        if sys.version_info < (3, 11):
+            out.append("tomli>=2.0.1")
+
+        LOG.info("sdist requires: %s", out)
+
+        return out
+
+    def get_requires_for_build_wheel(self) -> list[str]:
+        return self.get_requires_for_build_sdist() + ["wheel"]
+
 
 def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
+    LOG.debug(
+        "build_wheel %s %s %s", wheel_directory, config_settings, metadata_directory
+    )
+
     helper = DateVersion(config_settings=config_settings)
     with helper.patched_version():
         return helper.delegate_build_wheel(
@@ -227,6 +256,8 @@ def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
 
 
 def build_sdist(sdist_directory, config_settings=None):
+    LOG.debug("build_sdist %s %s", sdist_directory, config_settings)
+
     helper = DateVersion(config_settings=config_settings)
     with helper.patched_version():
         return helper.delegate_build_sdist(sdist_directory, config_settings)
@@ -247,12 +278,34 @@ def build_sdist(sdist_directory, config_settings=None):
 # We'll just define a build_editable always, and expect an error if
 # the delegate backend doesn't have it.
 def build_editable(wheel_directory, config_settings=None, metadata_directory=None):
+    LOG.debug(
+        "build_editable %s %s %s", wheel_directory, config_settings, metadata_directory
+    )
     helper = DateVersion(config_settings=config_settings)
     # Should there be version patching for editable mode or not??
     with helper.patched_version():
         return helper.delegate_build_editable(
             wheel_directory, config_settings, metadata_directory
         )
+
+
+def get_requires_for_build_wheel(config_settings=None):
+    LOG.debug("get_requires_for_build_wheel %s", config_settings)
+    helper = DateVersion(config_settings=config_settings)
+    return helper.get_requires_for_build_wheel()
+
+
+def get_requires_for_build_sdist(config_settings=None):
+    LOG.debug("get_requires_for_build_sdist %s", config_settings)
+
+    helper = DateVersion(config_settings=config_settings)
+    return helper.get_requires_for_build_sdist()
+
+
+def get_requires_for_build_editable(config_settings=None):
+    LOG.debug("get_requires_for_build_editable %s", config_settings)
+    helper = DateVersion(config_settings=config_settings)
+    return helper.get_requires_for_build_editable()
 
 
 # TODO: is it necessary to implement prepare_metadata_for_build_wheel
