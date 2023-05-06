@@ -220,10 +220,10 @@ class DateVersion:
             metadata_directory=metadata_directory,
         )
 
-    def get_requires_for_build_editable(self) -> list[str]:
+    def get_requires_for_build_editable(self):
         return self.get_requires_for_build_wheel()
 
-    def get_requires_for_build_sdist(self) -> list[str]:
+    def get_requires_for_build_sdist(self):
         out = []
 
         if self.build_backend_name.startswith("setuptools."):
@@ -237,7 +237,7 @@ class DateVersion:
 
         return out
 
-    def get_requires_for_build_wheel(self) -> list[str]:
+    def get_requires_for_build_wheel(self):
         return self.get_requires_for_build_sdist() + ["wheel"]
 
 
