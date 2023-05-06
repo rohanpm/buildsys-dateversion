@@ -1,11 +1,19 @@
 [project]
 name = "buildsys-dateversion"
+description = "Easy date-based versioning for Python projects"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Rohan McGovern", email = "rohan@mcgovern.id.au" }]
+maintainers = [{ name = "Rohan McGovern", email = "rohan@mcgovern.id.au" }]
 requires-python = ">= 3.8"
 dynamic = ["dependencies", "version"]
 
+[project.urls]
+homepage = "https://github.com/rohanpm/buildsys-dateversion"
+
 [tool.setuptools.dynamic]
-version = {attr = "buildsys_dateversion.__version__"}
-dependencies = {file = "requirements.in"}
+version = { attr = "buildsys_dateversion.__version__" }
+dependencies = { file = "requirements.in" }
 
 [build-system]
 requires = []
