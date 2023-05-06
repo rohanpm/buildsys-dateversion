@@ -2,7 +2,7 @@
 
 Easy date-based versioning for Python projects.
 
-![PyPI](https://img.shields.io/pypi/v/buildsys-dateversion)
+[![PyPI](https://img.shields.io/pypi/v/buildsys-dateversion)](https://pypi.org/project/buildsys-dateversion/)
 
 <!--TOC-->
 

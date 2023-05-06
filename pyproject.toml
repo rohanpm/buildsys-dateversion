@@ -15,6 +15,9 @@ homepage = "https://github.com/rohanpm/buildsys-dateversion"
 version = { attr = "buildsys_dateversion.__version__" }
 dependencies = { file = "requirements.in" }
 
+[tool.isort]
+profile = "black"
+
 [build-system]
 requires = []
 backend-path = ["src"]

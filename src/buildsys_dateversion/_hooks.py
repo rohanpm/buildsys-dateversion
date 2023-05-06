@@ -1,12 +1,12 @@
-import os
-import logging
-import re
-import urllib.request
-import urllib.error
-from datetime import datetime
-from contextlib import contextmanager
 import importlib
+import logging
+import os
+import re
 import sys
+import urllib.error
+import urllib.request
+from contextlib import contextmanager
+from datetime import datetime
 
 LOG = logging.getLogger("buildsys-dateversion")
 
