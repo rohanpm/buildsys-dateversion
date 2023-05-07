@@ -1,2 +1,5 @@
 graft src
+graft tests
 include LICENSE
+include requirements.in
+global-exclude *.py[cod]
