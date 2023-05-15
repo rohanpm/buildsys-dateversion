@@ -10,6 +10,8 @@ jobs:
 
   pypi-publish:
     needs: [tests]
+    permissions:
+      id-token: write
     uses: rohanpm/workflows/.github/workflows/pypi-release.yml@main
     with:
       name: buildsys-dateversion
