@@ -5,48 +5,11 @@ on:
     branches: [main]
 
 jobs:
-  run-ci:
-    uses: ./.github/workflows/ci.yml # use the callable tests job to run tests
+  tests:
+    uses: ./.github/workflows/tox.yml
 
   pypi-publish:
-    name: Upload release to PyPI
-    needs: [run-ci]
-    runs-on: ubuntu-22.04
-    environment:
-      name: pypi
-      url: https://pypi.org/p/buildsys-dateversion
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-
-      - name: Install dependencies
-        run: |
-          python -m pip install -U pip
-          pip install build
-
-      - name: Build distribution
-        run: |
-          python -mbuild
-
-      - name: Prepare for wheel check
-        run: |
-          pip download --no-deps --only-binary :all: --implementation py --platform none buildsys-dateversion
-          pip install .
-
-      - name: Check if wheel content changed
-        id: wheeldiff
-        run: |
-          set +e
-          set -x
-          wheeldiff --ignore version,record *.whl dist/*.whl
-          echo "diff=$?" >> "$GITHUB_OUTPUT"
-
-      - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        if: steps.wheeldiff.outputs.diff == '2'
+    needs: [tests]
+    uses: rohanpm/workflows/.github/workflows/pypi-release.yml@main
+    with:
+      name: buildsys-dateversion
