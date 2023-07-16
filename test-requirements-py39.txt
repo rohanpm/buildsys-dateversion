@@ -108,4 +108,6 @@ tomli==2.0.1 ; python_version < "3.11" \
     # via
     #   -r requirements.in
     #   build
+    #   coverage
+    #   pyproject-hooks
     #   pytest
