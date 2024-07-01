@@ -135,9 +135,9 @@ class DateVersion:
     @property
     def version(self) -> str:
         if "dateversion-distribution-version" not in self.config_settings:
-            self.config_settings[
-                "dateversion-distribution-version"
-            ] = self._get_version()
+            self.config_settings["dateversion-distribution-version"] = (
+                self._get_version()
+            )
         return self.config_settings["dateversion-distribution-version"]
 
     def _get_version(self) -> str:
