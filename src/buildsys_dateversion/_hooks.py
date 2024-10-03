@@ -76,6 +76,10 @@ class DateVersion:
                 if not file.endswith(".py"):
                     continue
 
+                # TODO: revisit handling of multiple matches:
+                # - assume shortest path is the best?
+                # - give fatal error?
+                # - update all of them?
                 path = os.path.join(dirpath, file)
                 LOG.debug("Checking file %s", path)
                 if VERSION_PATTERN.search(open(path).read()):
