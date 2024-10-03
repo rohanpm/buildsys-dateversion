@@ -38,14 +38,14 @@ jobs:
       - name: Prepare for wheel check
         run: |
           pip download --no-deps --only-binary :all: --implementation py --platform none buildsys-dateversion
-          pip install .
+          pip install wheeldiff
 
       - name: Check if wheel content changed
         id: wheeldiff
         run: |
           set +e
           set -x
-          wheeldiff --ignore version,record buildsys_dateversion-*.whl dist/buildsys_dateversion-*.whl
+          wheeldiff --ignore version,record buildsys_dateversion-20*.whl dist/buildsys_dateversion-20*.whl
           echo "diff=$?" >> "$GITHUB_OUTPUT"
 
       - name: Publish package distributions to PyPI
