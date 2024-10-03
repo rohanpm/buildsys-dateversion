@@ -10,9 +10,44 @@ jobs:
     uses: ./.github/workflows/tox.yml
 
   pypi-publish:
+    name: Upload release to PyPI
     needs: [tests]
+    runs-on: ubuntu-24.04
+    environment:
+      name: pypi
+      url: https://pypi.org/p/buildsys-dateversion
     permissions:
       id-token: write
-    uses: rohanpm/workflows/.github/workflows/pypi-release.yml@main
-    with:
-      name: buildsys-dateversion
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip
+          pip install build
+
+      - name: Build distribution
+        run: |
+          python -mbuild
+
+      - name: Prepare for wheel check
+        run: |
+          pip download --no-deps --only-binary :all: --implementation py --platform none buildsys-dateversion
+          pip install .
+
+      - name: Check if wheel content changed
+        id: wheeldiff
+        run: |
+          set +e
+          set -x
+          wheeldiff --ignore version,record buildsys_dateversion-*.whl dist/buildsys_dateversion-*.whl
+          echo "diff=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        if: steps.wheeldiff.outputs.diff == '2'
