@@ -18,6 +18,9 @@ dependencies = { file = "requirements.in" }
 [tool.isort]
 profile = "black"
 
+[tool.buildsys-dateversion]
+version-path = "src/buildsys_dateversion/__init__.py"
+
 [build-system]
 requires = []
 backend-path = ["src"]
