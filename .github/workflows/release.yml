@@ -33,7 +33,10 @@ jobs:
 
       - name: Build distribution
         run: |
+          set -x
+          export BUILDSYS_DATEVERSION_DEBUG=/tmp/buildsys-dateversion.log
           python -mbuild
+          cat /tmp/buildsys-dateversion.log
 
       - name: Prepare for wheel check
         run: |
