@@ -122,7 +122,7 @@ tomli==2.0.2 ; python_version < "3.11" \
     --hash=sha256:2ebe24485c53d303f690b0ec092806a085f07af5a5aa1464f3931eec36caaa38 \
     --hash=sha256:d46d457a85337051c36524bc5349dd91b1877838e2979ac5ced3e710ed8a60ed
     # via
-    #   -r requirements.in
+    #   -r /tmp/renovate/repos/github/rohanpm/buildsys-dateversion/requirements.in
     #   build
     #   coverage
     #   pytest
